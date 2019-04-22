@@ -1,5 +1,7 @@
 # test_app
 
+[![codecov.io](https://codecov.io/gh/Allison-Wu/Flutter_checkList/branch/master/graph/badge.svg)](https://codecov.io/gh/Allison-Wu/Flutter_checkList/branch/master)
+
 A new Flutter project.
 
 ## Getting Started
