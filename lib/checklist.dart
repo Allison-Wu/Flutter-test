@@ -3,30 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:test_app/new-task.dart';
 import 'package:test_app/utils/type.dart';
 
-void main() => {
-  // debugPaintSizeEnabled = true,
-  runApp(MyApp()),
-};
-
-enum TaskType {
-  TODO,
-  DONE,
-  ALL,
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CHECKLIST',
-      theme: ThemeData(
-        primaryColor: Colors.white,
-      ),
-      home: CheckList(),
-    );
-  }
-}
-
 class CheckList extends StatefulWidget {
   @override
   _checkListState createState() => _checkListState();
@@ -219,24 +195,29 @@ class _checkListState extends State<CheckList>{
     );
   }
 
+  List<Widget> _buildTaskListContent() {
+    List<Widget> _componentList = [];
+    _taskList.sort((a, b) => a['listTitle'].compareTo(b['listTitle']));
+    String insertedTitle;
+    for(final task in _taskList){
+      if (_currentTask == TaskType.ALL || task['taskType'] == _currentTask) {
+        if (task['listTitle'] != insertedTitle) {
+          _componentList.add(_buildListHeader(task['listTitle'], '(form 10 to 12 month)'));
+        }
+        _componentList.addAll([
+          _buildListItem(task),
+          Divider(),
+        ]);
+        insertedTitle = task['listTitle'];
+      }
+    }
+    return _componentList;
+  }
+
   Widget _buildTypeList() {
-    List<Map> _currentTypeList = _currentTask == TaskType.ALL ? _taskList :
-    _taskList.where((i) => i['taskType'] == _currentTask).toList();
-    _currentTypeList.sort((a, b) => taskTiming.indexOf(a['listTitle']).compareTo(taskTiming.indexOf(b['listTitle'])));
-    print(_currentTypeList);
-    List<Widget> _listByTitle = List<Widget>.generate(_currentTypeList.length, (int index) {
-        if (_currentTask == TaskType.ALL || _currentTypeList[index]['taskType'] == _currentTask)
-        return Column(
-          children: <Widget>[
-            _buildListItem(_currentTypeList[index]),
-            Divider(),
-          ],
-        );
-      });
-    _listByTitle.insert(0, _buildListHeader('BEFORE AUGUST 2019', '(from 10 to  12 months)'));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: _listByTitle,
+      children: _buildTaskListContent(),
     );
   }
 
@@ -244,7 +225,7 @@ class _checkListState extends State<CheckList>{
     task = await Navigator.of(originContext).push(
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return newTaskPage;
+          return AddTaskPage();
         }
       )
     );

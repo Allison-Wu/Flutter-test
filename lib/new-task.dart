@@ -4,13 +4,6 @@ import 'package:test_app/utils/type.dart';
 
 final _borderSideSetting = BorderSide(color: Colors.grey, width: 0.0);
 
-Widget newTaskPage = Scaffold(
-  appBar: AppBar(
-    title: Text('NEW TASK'),
-  ),
-  body: AddTaskPage(),
-);
-
 class AddTaskPage extends StatefulWidget {
   @override
   _addTaskPageState createState() => _addTaskPageState();
@@ -105,14 +98,19 @@ class _addTaskPageState extends State<AddTaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        _taskName(),
-        _taskTiming(),
-        _taskCategory(),
-        _taskDescription(),
-        _saveButton(),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('NEW TASK'),
+      ),
+      body: ListView(
+        children: <Widget>[
+          _taskName(),
+          _taskTiming(),
+          _taskCategory(),
+          _taskDescription(),
+          _saveButton(),
+        ],
+      ),
     );
   }
 
