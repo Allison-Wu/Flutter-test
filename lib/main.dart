@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/checklist.dart';
+import 'package:test_app/utils/dummyData.dart';
 
 void main() => {
   // debugPaintSizeEnabled = true,
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.white,
       ),
-      home: CheckList(),
+      home: CheckList(dummyTaskList),
     );
   }
 }

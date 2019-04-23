@@ -4,18 +4,14 @@ import 'package:test_app/new-task.dart';
 import 'package:test_app/utils/type.dart';
 
 class CheckList extends StatefulWidget {
+  List<Map> _taskList;
+  CheckList(this._taskList);
   @override
   _checkListState createState() => _checkListState();
 }
 
 class _checkListState extends State<CheckList>{
   int _finishedCount = 0;
-  List<Map> _taskList = [{
-    'name': 'Plan an engagement',
-    'isEssential': true,
-    'taskType': TaskType.TODO,
-    'listTitle': taskTiming[0],
-  }];
   TaskType _currentTask = TaskType.TODO;
 
   static Color dividerColor = Colors.grey;
@@ -32,7 +28,7 @@ class _checkListState extends State<CheckList>{
           children: [
             TextSpan(text:' $_finishedCount ', style: TextStyle(color: _counterFinishedColor, fontWeight: FontWeight.bold, fontSize: 20)),
             TextSpan(text:'out of'),
-            TextSpan(text:' ${_taskList.length} ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            TextSpan(text:' ${widget._taskList.length} ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             TextSpan(text:'tasks'),
           ],
         ),
@@ -46,7 +42,7 @@ class _checkListState extends State<CheckList>{
       child: ClipRRect(
         borderRadius: BorderRadius.horizontal(left: Radius.circular(150), right: Radius.circular(150)),
         child: LinearProgressIndicator(
-          value: _finishedCount/ _taskList.length,
+          value: _finishedCount/ widget._taskList.length,
           backgroundColor: Colors.grey[300],
           valueColor: new AlwaysStoppedAnimation<Color>(_counterFinishedColor),
         ),
@@ -55,7 +51,7 @@ class _checkListState extends State<CheckList>{
   }
 
   Widget _buildTaskCounter() {
-    _finishedCount = _taskList.where((i) => i['taskType'] == TaskType.DONE).toList().length;
+    _finishedCount = widget._taskList.where((i) => i['taskType'] == TaskType.DONE).toList().length;
     return Container(
       padding: EdgeInsets.all(15),
       alignment: Alignment.center,
@@ -197,9 +193,9 @@ class _checkListState extends State<CheckList>{
 
   List<Widget> _buildTaskListContent() {
     List<Widget> _componentList = [];
-    _taskList.sort((a, b) => a['listTitle'].compareTo(b['listTitle']));
+    widget._taskList.sort((a, b) => a['listTitle'].compareTo(b['listTitle']));
     String insertedTitle;
-    for(final task in _taskList){
+    for(final task in widget._taskList){
       if (_currentTask == TaskType.ALL || task['taskType'] == _currentTask) {
         if (task['listTitle'] != insertedTitle) {
           _componentList.add(_buildListHeader(task['listTitle'], '(form 10 to 12 month)'));
@@ -231,7 +227,7 @@ class _checkListState extends State<CheckList>{
     );
 
     if (task != null) {
-      _taskList.add({
+      widget._taskList.add({
         'name': task.name,
         'isEssential': false,
         'taskType': TaskType.TODO,
