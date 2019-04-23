@@ -42,7 +42,7 @@ class _checkListState extends State<CheckList>{
       child: ClipRRect(
         borderRadius: BorderRadius.horizontal(left: Radius.circular(150), right: Radius.circular(150)),
         child: LinearProgressIndicator(
-          value: _finishedCount/ widget._taskList.length,
+          value: widget._taskList.length > 0 ? _finishedCount/ widget._taskList.length : 0,
           backgroundColor: Colors.grey[300],
           valueColor: new AlwaysStoppedAnimation<Color>(_counterFinishedColor),
         ),
