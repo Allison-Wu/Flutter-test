@@ -3,6 +3,17 @@ class Task {
   String timing;
   String catorgary;
   String desctiption;
+  TaskType taskType;
+  bool isEssential;
+
+  Task({
+    this.name,
+    this.timing,
+    this.catorgary,
+    this.taskType= TaskType.TODO,
+    this.desctiption,
+    this.isEssential = false,
+  });
 }
 
 enum TaskType {

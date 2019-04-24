@@ -4,7 +4,7 @@ import 'package:test_app/new-task.dart';
 import 'package:test_app/utils/type.dart';
 
 class CheckList extends StatefulWidget {
-  List<Map> _taskList;
+  List<Task> _taskList;
   CheckList(this._taskList);
   @override
   _checkListState createState() => _checkListState();
@@ -16,7 +16,6 @@ class _checkListState extends State<CheckList>{
 
   static Color dividerColor = Colors.grey;
   static Color _counterFinishedColor = Colors.green;
-  Task task;
 
   Widget _counterTitle() {
     return Container(
@@ -51,7 +50,7 @@ class _checkListState extends State<CheckList>{
   }
 
   Widget _buildTaskCounter() {
-    _finishedCount = widget._taskList.where((i) => i['taskType'] == TaskType.DONE).toList().length;
+    _finishedCount = widget._taskList.where((task) => task.taskType == TaskType.DONE).toList().length;
     return Container(
       padding: EdgeInsets.all(15),
       alignment: Alignment.center,
@@ -121,19 +120,7 @@ class _checkListState extends State<CheckList>{
     );
   }
 
-  void _toggleEssential(Map task) {
-    setState(() {
-      task['isEssential'] = !task['isEssential'];
-    });
-  }
-
-  void _toggleFinish(Map task) {
-    setState(() {
-      task['taskType'] = (task['taskType'] == TaskType.TODO ? TaskType.DONE : TaskType.TODO);
-    });
-  }
-
-  Widget _buildListHeader(String listTitle, String listSubtitile) {
+  Widget _listHeader(String listTitle, String listSubtitile) {
     return Column(
       children: <Widget>[
         ListTile(
@@ -145,66 +132,96 @@ class _checkListState extends State<CheckList>{
     );
   }
 
-  Widget _buildListItem(Map task) {
-    return ListTile(
-      leading: IconButton(
-        onPressed: () => _toggleFinish(task),
-        icon: Icon(Icons.check_circle_outline, size: 40),
-        color: task['taskType'] ==  TaskType.TODO ? Colors.grey : Colors.green,
-      ),
-      title: Text(
-        task['name'],
-        softWrap: true,
-        style: TextStyle(
-          wordSpacing: 3,
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
-        ),
-      ),
-      subtitle: Container (
-        padding: EdgeInsets.only(top: 5),
-        child: RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: task['isEssential'] ? 'Essential*' : null,
-                style: TextStyle(
-                  color: Colors.orange,
-                ),
-              ),
-              TextSpan(
-                text: task['taskType'] ==  TaskType.TODO ? 'Planning' : 'Done',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      trailing: IconButton(
-        onPressed: () => _toggleEssential(task),
-        icon: Icon(Icons.assistant_photo),
-        color: task['isEssential'] ? Colors.orange : Colors.grey,
+  void _toggleFinish(int taskIndex) {
+    setState(() {
+      widget._taskList[taskIndex].taskType =
+        (widget._taskList[taskIndex].taskType == TaskType.TODO ? TaskType.DONE : TaskType.TODO);
+    });
+  }
+
+  Widget _listFinishButton(int taskIndex) {
+    return IconButton(
+      onPressed: () => _toggleFinish(taskIndex),
+      icon: Icon(Icons.check_circle_outline, size: 40),
+      color: widget._taskList[taskIndex].taskType ==  TaskType.TODO ? Colors.grey : Colors.green,
+    );
+  }
+
+  Widget _listTitle(int taskIndex) {
+    return Text(
+      widget._taskList[taskIndex].name,
+      softWrap: true,
+      style: TextStyle(
+        wordSpacing: 3,
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
       ),
     );
   }
 
-  List<Widget> _buildTaskListContent() {
+  Widget _listSubtitle(int taskIndex) {
+    return Container (
+      padding: EdgeInsets.only(top: 5),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: widget._taskList[taskIndex].isEssential ? 'Essential*' : null,
+              style: TextStyle(
+                color: Colors.orange,
+              ),
+            ),
+            TextSpan(
+              text: widget._taskList[taskIndex].taskType ==  TaskType.TODO ? 'Planning' : 'Done',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _toggleEssential(int taskIndex) {
+    setState(() {
+      widget._taskList[taskIndex].isEssential = !widget._taskList[taskIndex].isEssential;
+    });
+  }
+
+  Widget _listEssentialButton(int taskIndex) {
+    return IconButton(
+      onPressed: () => _toggleEssential(taskIndex),
+      icon: Icon(Icons.assistant_photo),
+      color: widget._taskList[taskIndex].isEssential ? Colors.orange : Colors.grey,
+    );
+  }
+
+  Widget _listItem(int taskIndex) {
+    return ListTile(
+      leading: _listFinishButton(taskIndex),
+      title: _listTitle(taskIndex),
+      subtitle: _listSubtitle(taskIndex),
+      trailing: _listEssentialButton(taskIndex),
+    );
+  }
+
+  List<Widget> _taskListContent() {
     List<Widget> _componentList = [];
-    widget._taskList.sort((a, b) => a['listTitle'].compareTo(b['listTitle']));
+    widget._taskList.sort((a, b) => a.timing.compareTo(b.timing));
     String insertedTitle;
-    for(final task in widget._taskList){
-      if (_currentTask == TaskType.ALL || task['taskType'] == _currentTask) {
-        if (task['listTitle'] != insertedTitle) {
-          _componentList.add(_buildListHeader(task['listTitle'], '(form 10 to 12 month)'));
+    for( int index = 0 ; index < widget._taskList.length; index++ ) {
+      Task task = widget._taskList[index];
+      if (_currentTask == TaskType.ALL || task.taskType == _currentTask) {
+        if (task.timing != insertedTitle) {
+          _componentList.add(_listHeader(task.timing, '(form 10 to 12 month)'));
         }
         _componentList.addAll([
-          _buildListItem(task),
+          _listItem(index),
           Divider(),
         ]);
-        insertedTitle = task['listTitle'];
+        insertedTitle = task.timing;
       }
     }
     return _componentList;
@@ -213,12 +230,12 @@ class _checkListState extends State<CheckList>{
   Widget _buildTypeList() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: _buildTaskListContent(),
+      children: _taskListContent(),
     );
   }
 
   void _toggleAddTaskNavigation(BuildContext originContext) async {
-    task = await Navigator.of(originContext).push(
+    Task task = await Navigator.of(originContext).push(
       MaterialPageRoute(
         builder: (BuildContext context) {
           return AddTaskPage();
@@ -227,12 +244,7 @@ class _checkListState extends State<CheckList>{
     );
 
     if (task != null) {
-      widget._taskList.add({
-        'name': task.name,
-        'isEssential': false,
-        'taskType': TaskType.TODO,
-        'listTitle': task.timing,
-      });
+      widget._taskList.add(task);
     }
   }
 

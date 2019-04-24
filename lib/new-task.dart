@@ -59,7 +59,7 @@ class _addTaskPageState extends State<AddTaskPage> {
     Function(dynamic) onSelected = (dynamic selectedTiming) { task.timing = selectedTiming; };
     return _buildComponent([
       _buildTitle('TIMING'),
-      Picker(taskTiming, onSelected),
+      Picker(taskTiming, onSelected, selectedIndex: taskTiming.indexOf(task.timing)),
     ]);
   }
 
@@ -67,7 +67,7 @@ class _addTaskPageState extends State<AddTaskPage> {
     Function(dynamic) onSelected = (dynamic selectedCatorgary) { task.catorgary = selectedCatorgary; };
     return _buildComponent([
       _buildTitle('CATEGORY'),
-      Picker(taskCatorgary, onSelected),
+      Picker(taskCatorgary, onSelected, selectedIndex: taskCatorgary.indexOf(task.catorgary)),
     ]);
   }
 
@@ -120,7 +120,7 @@ class Picker extends StatefulWidget {
   List _itemList;
   int selectedIndex;
   Function(dynamic) _setSelectedValue;
-  Picker(this._itemList,  this._setSelectedValue, {this.selectedIndex});
+  Picker(this._itemList,  this._setSelectedValue, {this.selectedIndex = -1});
   @override
   _pickerState createState() => _pickerState();
 }
@@ -239,7 +239,7 @@ class _pickerState extends State<Picker> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                  widget.selectedIndex == null ? _defaultValue : widget._itemList[widget.selectedIndex].toString(),
+                  widget.selectedIndex == -1 ? _defaultValue : widget._itemList[widget.selectedIndex].toString(),
                   style: TextStyle(fontSize: 20),
               ),
               Icon(Icons.keyboard_arrow_down, size: 30),
