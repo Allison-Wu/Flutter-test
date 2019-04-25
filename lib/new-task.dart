@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:test_app/utils/picker.dart';
 import 'package:test_app/utils/type.dart';
-
-final _borderSideSetting = BorderSide(color: Colors.grey, width: 0.0);
 
 class AddTaskPage extends StatefulWidget {
   @override
@@ -29,7 +28,8 @@ class _addTaskPageState extends State<AddTaskPage> {
       maxLines: line,
       style: TextStyle(fontSize: 20),
       decoration: InputDecoration(
-        border: OutlineInputBorder(borderSide: _borderSideSetting),
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 0.0)),
+        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 0.0)),
         hintText: hintText,
         hintStyle: TextStyle(fontSize: 20),
       ),
@@ -114,140 +114,4 @@ class _addTaskPageState extends State<AddTaskPage> {
     );
   }
 
-}
-
-class Picker extends StatefulWidget {
-  List _itemList;
-  int selectedIndex;
-  Function(dynamic) _setSelectedValue;
-  Picker(this._itemList,  this._setSelectedValue, {this.selectedIndex = -1});
-  @override
-  _pickerState createState() => _pickerState();
-}
-
-class _pickerState extends State<Picker> {
-  String _defaultValue = 'Unclassified';
-  int _locatedIndex;
-
-  Widget _buildPickerContent(){
-    _locatedIndex = _locatedIndex?? 0;
-    return CupertinoPicker(
-      scrollController: FixedExtentScrollController(initialItem: _locatedIndex),
-      itemExtent: 32.0,
-      backgroundColor: CupertinoColors.extraLightBackgroundGray,
-      onSelectedItemChanged: (int index) {
-        setState(() => _locatedIndex = index);
-      },
-      children: List<Widget>.generate(widget._itemList.length, (int index) {
-        return Center(child:
-          Text(widget._itemList[index].toString()),
-        );
-      }),
-    );
-  }
-
-  void _toggleBottomPicker() async {
-    await showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return _buildBottomPicker(_buildPickerContent());
-      },
-    );
-  }
-
-  Widget _buildBottomPicker(Widget picker) {
-    return Container(
-      height: 300.0,
-      color: CupertinoColors.extraLightBackgroundGray,
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              CupertinoButton(
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-                onPressed: () => {
-                  Navigator.of(context).pop(),
-                },
-              ),
-              CupertinoButton(
-                child: Text(
-                  'Choose',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-                onPressed: () => {
-                  setState(() => {
-                    widget.selectedIndex = _locatedIndex,
-                    widget._setSelectedValue(widget._itemList[widget.selectedIndex]),
-                    Navigator.of(context).pop(),
-                  })
-                },
-
-              ),
-            ],
-          ),
-          Expanded(
-            child: Container(
-              child: DefaultTextStyle(
-                style: const TextStyle(
-                  color: CupertinoColors.black,
-                  fontSize: 22.0,
-                ),
-                child: GestureDetector(
-                  // Blocks taps from propagating to the modal sheet and popping.
-                  onTap: () { },
-                  child: SafeArea(
-                    top: false,
-                    child: picker,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _toggleBottomPicker(),
-      child: Container(
-      decoration: BoxDecoration(
-        color: CupertinoTheme.of(context).scaffoldBackgroundColor,
-        border: Border(
-          top: _borderSideSetting,
-          bottom: _borderSideSetting,
-          left: _borderSideSetting,
-          right: _borderSideSetting,
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(15),
-        child: SafeArea(
-          top: false,
-          bottom: false,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                  widget.selectedIndex == -1 ? _defaultValue : widget._itemList[widget.selectedIndex].toString(),
-                  style: TextStyle(fontSize: 20),
-              ),
-              Icon(Icons.keyboard_arrow_down, size: 30),
-            ],
-          ),
-        ),
-      ),
-      ),
-    );
-  }
 }
