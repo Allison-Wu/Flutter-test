@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:test_app/new-task.dart';
 import 'package:test_app/utils/type.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CheckList extends StatefulWidget {
   List<Task> _taskList;
@@ -69,7 +70,7 @@ class _checkListState extends State<CheckList>{
     });
   }
 
-  Widget _buildTitleItem(IconData icon, TaskType type) {
+  Widget _buildTitle(IconData icon, TaskType type) {
     String label = 'ERROR';
     switch(type) {
       case TaskType.TODO: {
@@ -113,9 +114,9 @@ class _checkListState extends State<CheckList>{
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Expanded(child: _buildTitleItem(Icons.access_time, TaskType.TODO)),
-        Expanded(child: _buildTitleItem(Icons.check_circle_outline, TaskType.DONE)),
-        Expanded(child: _buildTitleItem(Icons.more_horiz, TaskType.ALL)),
+        Expanded(child: _buildTitle(Icons.access_time, TaskType.TODO)),
+        Expanded(child: _buildTitle(Icons.check_circle_outline, TaskType.DONE)),
+        Expanded(child: _buildTitle(Icons.more_horiz, TaskType.ALL)),
       ],
     );
   }
@@ -199,11 +200,27 @@ class _checkListState extends State<CheckList>{
   }
 
   Widget _listItem(int taskIndex) {
-    return ListTile(
-      leading: _listFinishButton(taskIndex),
-      title: _listTitle(taskIndex),
-      subtitle: _listSubtitle(taskIndex),
-      trailing: _listEssentialButton(taskIndex),
+    return Slidable(
+      delegate: new SlidableDrawerDelegate(),
+      actionExtentRatio: 0.25,
+      child: ListTile(
+        leading: _listFinishButton(taskIndex),
+        title: _listTitle(taskIndex),
+        subtitle: _listSubtitle(taskIndex),
+        trailing: _listEssentialButton(taskIndex),
+      ),
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          caption: 'Delete',
+          color: Colors.red,
+          icon: Icons.delete,
+          onTap: () => {
+            setState(() {
+              widget._taskList.removeAt(taskIndex);
+            })
+          },
+        ),
+      ],
     );
   }
 
