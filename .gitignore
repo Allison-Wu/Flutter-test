@@ -72,3 +72,6 @@
 # report related
 coverage/
 coverage-result/
+
+# dev
+pubspec.lock
