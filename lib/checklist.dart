@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:test_app/new-task.dart';
+import 'package:test_app/Routes.dart';
 import 'package:test_app/utils/type.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -224,7 +224,7 @@ class _checkListState extends State<CheckList>{
     );
   }
 
-  List<Widget> _taskListContent() {
+  List<Widget> _taskListContent() { 
     List<Widget> _componentList = [];
     widget._taskList.sort((a, b) => a.timing.compareTo(b.timing));
     String insertedTitle;
@@ -251,18 +251,12 @@ class _checkListState extends State<CheckList>{
     );
   }
 
-  void _toggleAddTaskNavigation(BuildContext originContext) async {
-    Task task = await Navigator.of(originContext).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) {
-          return AddTaskPage();
-        }
-      )
-    );
-
-    if (task != null) {
-      widget._taskList.add(task);
-    }
+  void _toggleAddTaskNavigation(BuildContext originContext) {
+    Navigator.of(context).pushNamed(Routes.newTaskRoute).then((value) {
+      if (value != null) {
+        widget._taskList.add(value);
+      }
+    });
   }
 
   @override
