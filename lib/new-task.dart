@@ -89,7 +89,7 @@ class _addTaskPageState extends State<AddTaskPage> {
           color: Colors.blue[200],
           splashColor: Colors.green[200],
           onPressed: () => {
-            Navigator.of(context).pop(task)
+            Navigator.of(context).pop(task),
           },
         ),
       ),
