@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/Login/login.dart';
+import 'package:provider/provider.dart';
+import 'package:test_app/Page/Login/login.dart';
+import 'package:test_app/State/login.dart';
 import 'package:test_app/checklist.dart';
 import 'package:test_app/new-task.dart';
 import 'package:test_app/utils/dummyData.dart';
@@ -11,19 +13,24 @@ class Routes {
 
   Routes() {
     runApp(
-      new MaterialApp(
-        // debugShowCheckedModeBanner: false,
-        // debugPaintSizeEnabled = true,
-        title: 'CHECKLIST',
-        theme: ThemeData(
-          primaryColor: Colors.white,
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(builder: (_) => LoginState()),
+        ],
+        child: new MaterialApp(
+          // debugShowCheckedModeBanner: false,
+          // debugPaintSizeEnabled = true,
+          title: 'CHECKLIST',
+          theme: ThemeData(
+            primaryColor: Colors.white,
+          ),
+          home: Login(),
+          routes: {
+            checkListRoute: (context) => CheckList(dummyTaskList),
+            newTaskRoute: (context) => AddTaskPage(),
+          },
         ),
-        home: Login(),
-        routes: {
-          checkListRoute: (context) => CheckList(dummyTaskList),
-          newTaskRoute: (context) => AddTaskPage(),
-        },
-      ),
+      )
     );
   }
 }
