@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test_app/Page/Home/BottomAppBar/bottomAppBar.dart';
 import 'package:test_app/Page/Login/login.dart';
 import 'package:test_app/State/login.dart';
 import 'package:test_app/checklist.dart';
@@ -10,6 +11,7 @@ class Routes {
   static const String checkListRoute = '/checklist';
   static const String newTaskRoute = '/newTask';
   static const String loginRoute = '/login';
+  static const String homeRoute = '/home';
 
   Routes() {
     runApp(
@@ -24,8 +26,10 @@ class Routes {
           theme: ThemeData(
             primaryColor: Colors.white,
           ),
-          home: Login(),
+          // home: Login(),
+          home: Home(),
           routes: {
+            homeRoute: (context) => Home(),
             checkListRoute: (context) => CheckList(dummyTaskList),
             newTaskRoute: (context) => AddTaskPage(),
           },

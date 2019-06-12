@@ -14,10 +14,10 @@ class _loginState extends State<Login>{
 
   void _toggleLogin() async {
     LoginState state = Provider.of<LoginState>(context);
-    await state.fetchToken();
-    if (state.errorMessage.isEmpty && state.token.isNotEmpty) {
-      Navigator.of(context).pushReplacementNamed(Routes.checkListRoute);
-    }
+    // await state.fetchToken();
+    // if (state.errorMessage.isEmpty && state.token.isNotEmpty) {
+      Navigator.of(context).pushReplacementNamed(Routes.homeRoute);
+    // }
   }
 
   Widget _formContainer(){
